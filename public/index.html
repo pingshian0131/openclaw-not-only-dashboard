@@ -641,6 +641,7 @@
         voiceOnyx: 'onyx（男，低沉）',
         chatPlaceholder: '選擇 Agent 後開始對話',
         inputPlaceholder: '輸入訊息...',
+        iosDictationHint: '點鍵盤上的 🎤 說話',
         voice: '語音',
         listening: '聆聽中',
         send: '發送',
@@ -698,6 +699,7 @@
         voiceOnyx: 'onyx (M, deep)',
         chatPlaceholder: 'Select an Agent to start chatting',
         inputPlaceholder: 'Type a message...',
+        iosDictationHint: 'Tap 🎤 on keyboard to speak',
         voice: 'Voice',
         listening: 'Listening',
         send: 'Send',
@@ -1207,8 +1209,20 @@
       recognition.onerror = () => stopListening()
     }
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+
     function startListening() {
-      if (!recognition || !state.activeAgent) return
+      if (!state.activeAgent) return
+
+      // iOS Safari WebSpeech is broken — just focus the input for keyboard dictation
+      if (isIOS) {
+        const input = document.getElementById('chat-input')
+        input.focus()
+        input.placeholder = t('iosDictationHint')
+        return
+      }
+
+      if (!recognition) return
       state.isListening = true
       recognition.start()
       const btn = document.getElementById('voice-btn')

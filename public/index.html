@@ -1307,9 +1307,8 @@
     // Swap character with animation
     async function swapCharacter(colorHex, agentId) {
       controls.autoRotate = true
-      // Try GLB model for this agent first, then fall back to main.glb, then procedural
-      const loaded = (agentId ? await loadGLBCharacter(`/models/${agentId}.glb`) : false)
-        || await loadGLBCharacter('/models/main.glb')
+      // Try GLB model for this specific agent only, then fall back to procedural
+      const loaded = agentId ? await loadGLBCharacter(`/models/${agentId}.glb`) : false
       if (!loaded) buildCharacter(colorHex)
     }
 
